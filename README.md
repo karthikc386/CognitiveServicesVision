@@ -1,4 +1,5 @@
-# CognitiveServicesVision #azure #ReadTextinImages #Microsoft.Azure.CognitiveServices.Vision.ComputerVision
+# CognitiveServicesVision 
+**_#azure #ReadTextinImages #Microsoft.Azure.CognitiveServices.Vision.ComputerVision_**
 
 ## Using the OCR API
 
