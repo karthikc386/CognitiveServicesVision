@@ -1,0 +1,133 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="card">
+                <h5 class="card-header h5 text-center">
+                    Video From WebCam
+                </h5>
+                <div class="card-body">
+                    <div class="booth">
+                        <video id="video" width="100%" height="100%" autoplay onclick="snapshot(this);">
+                        </video>
+                    </div>
+
+                    <div class="text-right">
+                        <a href="#!" class="btn btn-danger"
+                           onClick="stop()">
+                            Stop Cam
+                        </a>
+                        <a href="#!" class="btn btn-success"
+                           onClick="start()">
+                            Start Cam
+                        </a>
+                        <a href="#!" id="takeSnapshot" class="btn btn-info" style="display:none"
+                           onClick="snapshot()">
+                            Take Snapshot
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <canvas id="myCanvas" width="640" height="480"></canvas>
+            <div class="text-right">
+                <input type="button" class="btn btn-primary btnSave" id="ocr" name="btnSave" value="Extract Text using OCR" />
+                <input type="button" class="btn btn-primary btnSave" id="text" name="btnSave" value="Extract Text" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+
+        var stop = function () {
+            $("#takeSnapshot").hide();
+            var stream = video.srcObject;
+            var tracks = stream.getTracks();
+            for (var i = 0; i < tracks.length; i++) {
+                var track = tracks[i];
+                track.stop();
+            }
+            video.srcObject = null;
+        }
+        var start = function () {
+
+            $("#takeSnapshot").show();
+            var video = document.getElementById('video'),
+                vendorUrl = window.URL || window.webkitURL;
+            if (navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({ video: true })
+                    .then(function (stream) {
+                        video.srcObject = stream;
+                    }).catch(function (error) {
+                        console.log("Something went wrong!");
+                    });
+            }
+        }
+        $(function () {
+            start();
+        });
+
+        //---------------------
+        // TAKE A SNAPSHOT CODE
+        //---------------------
+        var canvas, ctx;
+
+        function init() {
+            // Get the canvas and obtain a context for
+            // drawing in it
+            canvas = document.getElementById("myCanvas");
+            ctx = canvas.getContext('2d');
+        }
+
+        function snapshot() {
+            // Draws current image from the video element into the canvas
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        }
+
+        // Upload image to server - ajax call - with the help of base64 data as a parameter  
+        $(".btnSave").click(function ()
+        {
+
+            var readType = $(this).attr('id');
+
+            // Below new canvas to generate flip/mirron image from existing canvas  
+            var destinationCanvas = document.createElement("canvas");
+            var destCtx = destinationCanvas.getContext('2d');
+
+
+            destinationCanvas.height = 500;
+            destinationCanvas.width = 500;
+
+            //destCtx.translate(video.videoWidth, 0);
+            //destCtx.scale(-1, 1);
+            destCtx.drawImage(document.getElementById("myCanvas"), 0, 0);
+
+            // Get base64 data to send to server for upload  
+            var imagebase64data = destinationCanvas.toDataURL("image/png");
+            imagebase64data = imagebase64data.replace('data:image/png;base64,', '');
+            var data = JSON.stringify({ imageData: imagebase64data, type: readType });
+
+            $.ajax({
+                type: 'POST',
+                url: '/home/UploadWebCamImage',
+                data: data,
+                contentType: 'application/json',
+                dataType: 'text',
+                success: function (data) {
+                    var responseData = JSON.parse(data);
+                    console.log(responseData.url);
+                    window.location.href = responseData.url;
+                }
+            });
+        });
+
+
+    </script>
+}

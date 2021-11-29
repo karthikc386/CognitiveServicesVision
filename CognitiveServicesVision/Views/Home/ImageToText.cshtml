@@ -1,0 +1,30 @@
+﻿@model CognitiveServicesVision.Models.ReadTextInImageModel
+
+@{
+    ViewData["Title"] = "View";
+}
+
+<div class="container-fluid">
+    <h3>Read Text In Image </h3>
+    <hr />
+    <div class="row">
+        <div class="col-md-4">
+            <h4>Input Image</h4>
+
+            <img src="~/@Model.InputUrl" style="width:100%;" />
+        </div>
+        @if (Model.OutputUrl != null)
+        {
+            <div class="col-md-4">
+                <h4>Highlighted Image</h4>
+                <img src="~/@Model.OutputUrl" style="width:100%;" />
+            </div>
+        }
+        <div class="col-md-4">
+            <h4>Text from Image</h4>
+            <div class="jumbotron">
+                @Html.Raw(@Model.TextInImage)
+            </div>
+        </div>
+    </div>
+</div>
