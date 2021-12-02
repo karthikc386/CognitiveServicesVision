@@ -16,11 +16,13 @@ namespace CognitiveServicesVision.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IReadTextInImageService _readTextInImageService;
+        private readonly IAnalyzingImageService _analyzingImageService;
 
-        public HomeController(ILogger<HomeController> logger, IReadTextInImageService readTextInImageService)
+        public HomeController(ILogger<HomeController> logger, IReadTextInImageService readTextInImageService, IAnalyzingImageService analyzingImageService)
         {
             _logger = logger;
             _readTextInImageService = readTextInImageService;
+            _analyzingImageService = analyzingImageService;
         }
 
         public IActionResult Index()
@@ -33,19 +35,35 @@ namespace CognitiveServicesVision.Controllers
         {
             var inputPath = _readTextInImageService.SaveImageTemp(fileUploadModel.ImageData);
             var outputPath = new ReadTextInImageModel();
+            var type = string.Empty;
+            var redirectUrl = string.Empty;
 
-            if(fileUploadModel.Type == "ocr")
+            if (fileUploadModel.Type == "ocr")
             {
                 outputPath = await _readTextInImageService.GetTextOcrAsync(inputPath);
+                type = "text"; 
             }                
-            else
+            else if (fileUploadModel.Type == "text")
             {
                 outputPath = await _readTextInImageService.GetTextReadAsync(inputPath);
+                type = "text";
             }          
+            else
+            {
+                type = "analyzing";
 
+                var imageAnalysisModel = await _analyzingImageService.AnalyzeImageAsync(inputPath);
+                HttpContext.Session.SetString("AnalyzingImageSession", JsonConvert.SerializeObject(imageAnalysisModel));
+                HttpContext.Session.SetString("InputImageSession", inputPath);
+                redirectUrl = Request.Scheme + "://" + Request.Host + "/home/analyzingimage";
+            }
 
-            HttpContext.Session.SetString("ReadTextInImageSession", JsonConvert.SerializeObject(outputPath) );
-            var redirectUrl = Request.Scheme + "://" + Request.Host + "/home/imagetoText";
+            if(type == "text")
+            {
+                HttpContext.Session.SetString("ReadTextInImageSession", JsonConvert.SerializeObject(outputPath));
+                redirectUrl = Request.Scheme + "://" + Request.Host + "/home/imagetoText";
+            }
+            
 
             return Json(new { url = redirectUrl });
         }
@@ -54,10 +72,22 @@ namespace CognitiveServicesVision.Controllers
         public IActionResult ImageToText()
         {
             var sessionData = HttpContext.Session.GetString("ReadTextInImageSession");
-            var outputPath = JsonConvert.DeserializeObject<ReadTextInImageModel>(sessionData);
+            var readTextInImageModel = JsonConvert.DeserializeObject<ReadTextInImageModel>(sessionData);
 
-            return View(outputPath);
+            return View(readTextInImageModel);
         }
+
+        [HttpGet("home/analyzingimage")]
+        public IActionResult AnalyzingImage()
+        {
+            var sessionData = HttpContext.Session.GetString("AnalyzingImageSession");
+            ViewData["ImageUrl"] = HttpContext.Session.GetString("InputImageSession");
+            var imageAnalysisModel = JsonConvert.DeserializeObject<ImageAnalysisModel>(sessionData);
+
+            return View(imageAnalysisModel);
+        }
+
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

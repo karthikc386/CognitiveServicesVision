@@ -27,6 +27,9 @@ namespace CognitiveServicesVision
         {
             services.Configure<CogSvcModel>(options => Configuration.GetSection("CogSvc").Bind(options));
             services.AddTransient<IReadTextInImageService, ReadTextInImageService>();
+            services.AddTransient<IComputerVisionClientService, ComputerVisionClientService>();
+            services.AddTransient<IAnalyzingImageService, AnalyzingImageService>();
+
             services.AddSession(options => {
                 options.IdleTimeout = TimeSpan.FromMinutes(60);
             });

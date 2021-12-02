@@ -17,20 +17,18 @@ namespace CognitiveServicesVision.Services
     {
         string SaveImageTemp(string imageData);
         Task<ReadTextInImageModel> GetTextOcrAsync(string imageFile);
-        Task<ReadTextInImageModel> GetTextReadAsync(string imageFile);
+        Task<ReadTextInImageModel> GetTextReadAsync(string imageFile);        
     }
 
     public class ReadTextInImageService : IReadTextInImageService
     {
-       private readonly ComputerVisionClient _computerVisionClient;
+        private readonly ComputerVisionClient _computerVisionClient;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        private readonly CogSvcModel _settings;
 
-        public ReadTextInImageService(IWebHostEnvironment webHostEnvironment,
-            IOptions<CogSvcModel> settings)
+        public ReadTextInImageService(IWebHostEnvironment webHostEnvironment, 
+            IComputerVisionClientService computerVisionClientService)
         {
-            _settings = settings.Value;
-            _computerVisionClient = GetComputerVisionClient();
+            _computerVisionClient = computerVisionClientService.GetComputerVisionClient();
             _webHostEnvironment = webHostEnvironment;
         }
 
@@ -145,16 +143,6 @@ namespace CognitiveServicesVision.Services
             }
 
             return readText;
-        }
-
-
-        private ComputerVisionClient GetComputerVisionClient()
-        {
-            ApiKeyServiceClientCredentials credentials = new ApiKeyServiceClientCredentials(_settings.Key);
-            return new ComputerVisionClient(credentials)
-            {
-                Endpoint = _settings.Endpoint
-            };
         }
 
         public string SaveImageTemp (string imageData)

@@ -1,0 +1,70 @@
+﻿@model CognitiveServicesVision.Models.ImageAnalysisModel
+
+@{
+    ViewData["Title"] = "View";
+    var imageAnalysisView = Model;
+}
+
+<div class="container-fluid">
+
+    <div class="text-center">
+        <h4>Image analysis using cognitive service</h4>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-6">
+
+            @if (ViewData["ImageUrl"] != null)
+            {
+                var imageUrl = Convert.ToString(ViewData["ImageUrl"]);
+                <img src="~/@imageUrl" class="img-thumbnail" />
+            }
+        </div>
+        <div class="col-sm-6 small">
+            <p>
+                @if (imageAnalysisView != null)
+                {
+                    <h5>Description</h5>
+                    foreach (var caption in imageAnalysisView.ImageAnalysisResult.Description.Captions)
+                    {
+                        <span class="text-info"> @caption.Text: with confidence @caption.Confidence</span><br />
+                    }
+                    <h5>Category:</h5>
+                    foreach (var category in imageAnalysisView.ImageAnalysisResult.Categories)
+                    {
+                        <span class="text-success"> @category.Name with confidence: @category.Score</span><br />
+                    }
+                    <h5>Tags</h5>
+                    foreach (var tag in imageAnalysisView.ImageAnalysisResult.Tags)
+                    {
+                        <span class="badge badge-success">@tag.Name - @tag.Confidence</span>
+                    }
+                    <h5>Object Detection</h5>
+                    foreach (var obj in imageAnalysisView.ImageAnalysisResult.Objects)
+                    {
+
+                        <span class="badge badge-warning">@obj.ObjectProperty with Confidence @obj.Confidence</span>
+                    }
+                    <h5>Face Detection</h5>
+                    foreach (var face in imageAnalysisView.ImageAnalysisResult.Faces)
+                    {
+                        <span class="badge badge-info">
+                            A @face.Gender of age @face.Age at location @face.FaceRectangle.Left, @face.FaceRectangle.Top, @face.FaceRectangle.Width, @face.FaceRectangle.Top, @face.FaceRectangle.Height
+                        </span>
+                    }
+
+                    <h5>Image color scheme</h5>
+                    <span class="badge badge-secondary">Is black and white?:@imageAnalysisView.ImageAnalysisResult.Color.IsBWImg</span>
+                    <span class="badge badge-secondary">Accent color:@imageAnalysisView.ImageAnalysisResult.Color.AccentColor</span>
+                    <span class="badge badge-secondary">Dominant background color:@imageAnalysisView.ImageAnalysisResult.Color.DominantColorBackground</span>
+                    <span class="badge badge-secondary">Dominant foreground color:@imageAnalysisView.ImageAnalysisResult.Color.DominantColorForeground</span>
+
+                    <h5>Image Type</h5>
+                    <span class="badge badge-secondary">Clip Art Type: @imageAnalysisView.ImageAnalysisResult.ImageType.ClipArtType</span>
+                    <span class="badge badge-secondary">Line Drawing Type: @imageAnalysisView.ImageAnalysisResult.ImageType.LineDrawingType</span>
+
+                }
+            </p>
+        </div>
+    </div>
+</div>
