@@ -20,7 +20,8 @@ c) In the appSettings.json file set Cognitive Services EndPoint and Key
 ## 1. Using the OCR API
 
 **Input** - Image file captured from WebCam
-![image](https://user-images.githubusercontent.com/7878694/143863886-82b01c60-cfec-4310-b787-2d07eeaac387.png)
+![1_TextToImage_Input](https://user-images.githubusercontent.com/7878694/144555714-3d732897-6ad4-46d3-b60d-33a33b329191.PNG)
+
 
 **Output** - Rendered Text from Image
 ![image](https://user-images.githubusercontent.com/7878694/143863080-148b6f8e-4c4d-475c-be7a-c201cbae4ff5.png)
@@ -28,15 +29,16 @@ c) In the appSettings.json file set Cognitive Services EndPoint and Key
 ## 2. Using the Read API
 
 **Input** - Image file captured from WebCam
-![image](https://user-images.githubusercontent.com/7878694/143863934-afdcc822-1faf-4e3e-b84b-af1565bb4d4f.png)
+![5_TextToImage_Input_TextApi_handwritten](https://user-images.githubusercontent.com/7878694/144555745-5b9262c9-f4b9-422f-9714-09621e806f20.PNG)
 
 **Output** - Rendered Text from Image
 ![image](https://user-images.githubusercontent.com/7878694/143863252-a6064014-514b-4e48-b74f-ee79834b8122.png)
 
-## 1. Using the OCR API
+## 3. Using Image Analyze API
 
 **Input** - Image file captured from WebCam
-![image](https://user-images.githubusercontent.com/7878694/143863886-82b01c60-cfec-4310-b787-2d07eeaac387.png)
+![7_ImageAnalysis_Input](https://user-images.githubusercontent.com/7878694/144555774-3270386f-be77-41e7-8baa-1447a21481ea.PNG)
 
 **Output** - Rendered Text from Image
-![image](https://user-images.githubusercontent.com/7878694/143863080-148b6f8e-4c4d-475c-be7a-c201cbae4ff5.png)
+![8_ImageAnalysis_OutPut](https://user-images.githubusercontent.com/7878694/144555806-7ec571ae-d637-42ff-9ce2-1202f70b5439.PNG)
+
